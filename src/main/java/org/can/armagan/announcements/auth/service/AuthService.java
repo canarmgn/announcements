@@ -3,6 +3,7 @@ package org.can.armagan.announcements.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.can.armagan.announcements.auth.jwt.JwtUtil;
+import org.can.armagan.announcements.auth.model.request.AuthRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
