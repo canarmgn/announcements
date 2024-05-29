@@ -1,14 +1,12 @@
-package org.can.armagan.announcements.controller;
+package org.can.armagan.announcements.auth.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
-import org.can.armagan.announcements.auth.model.Announcement;
+import org.can.armagan.announcements.auth.model.User_Roles;
 import org.can.armagan.announcements.auth.model.request.AuthRequest;
 import org.can.armagan.announcements.auth.service.AuthService;
 import org.can.armagan.announcements.auth.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -29,6 +27,12 @@ public class AuthController {
         userService.createUser(authRequest.getUsername(), authRequest.getPassword());
         return "The user has been successfully registered.";
     }
+    @PostMapping("/addrole")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String addRole(@RequestBody User_Roles userRoles) {
+        userService.addRoleToUser(userRoles.getUser_id(), userRoles.getRole_id());
+        return "The role has been successfully added.";
+    }
 
     @DeleteMapping("/deleteuser/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -37,16 +41,4 @@ public class AuthController {
         return "The user has been successfully deleted.";
     }
 
-    @PostMapping("/newAnnouncement")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
-    public Announcement createAnnouncement(@RequestBody Announcement announcement, @AuthenticationPrincipal User user) {
-         announcementService.createAnnouncement(announcement);
-         return "announcement has been successfully created";
-    }
-
-    @PostMapping("/{id}/support")
-    public void supportAnnouncement(@PathVariable Long id, @AuthenticationPrincipal User user) {
-        announcementService.supportAnnouncement(id, user);
-        return "Supported successfully.";
-    }
 }

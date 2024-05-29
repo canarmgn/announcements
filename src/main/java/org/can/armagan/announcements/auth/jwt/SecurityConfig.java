@@ -28,30 +28,28 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
 
     @Bean
-    public JwtFilter jwtFilter() {
-        return new JwtFilter();
-    }
-
-    @Bean
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
     }
+    @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests(authorizeRequests ->
-                authorizeRequests
-                        .antMatchers("/login").permitAll()
-                        .antMatchers(HttpMethod.GET, "/getapidata").hasRole("EDITOR")
-                        .anyRequest().authenticated()
+                        authorizeRequests
+                                .antMatchers("/login").permitAll()
+                                .antMatchers(HttpMethod.GET, "/getapidata").hasRole("EDITOR")
+                                .anyRequest().authenticated()
 
-        )
+                )
                 .exceptionHandling(exceptionHandling ->
-                exceptionHandling.accessDeniedHandler(accessDeniedHandler)
-        )
+                        exceptionHandling.accessDeniedHandler(accessDeniedHandler)
+                )
                 .sessionManagement(sessionManagement ->
                         sessionManagement
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -60,8 +58,6 @@ public class SecurityConfig {
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
-
 
 
 

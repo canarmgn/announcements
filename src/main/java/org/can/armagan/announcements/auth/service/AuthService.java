@@ -7,12 +7,14 @@ import org.can.armagan.announcements.auth.model.request.AuthRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+
 public class AuthService {
 
     private final JwtUtil jwtUtil;
@@ -26,7 +28,7 @@ public class AuthService {
         } catch (BadCredentialsException ex){
             throw new BadCredentialsException("Incorrect username or password", ex);
         }
-        final UserDetails userDetails =userDetailsService.loadUserByUsername(authRequest.getUsername(authRequest.getUsername()));
+        final UserDetails userDetails =userDetailsService.loadUserByUsername(authRequest.getUsername());
         return jwtUtil.generateToken(userDetails);
     }
 
