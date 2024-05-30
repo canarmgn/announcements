@@ -15,7 +15,6 @@ public class Announcement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String content;
-    private String createdBy;
     private int supporters;
 
 }

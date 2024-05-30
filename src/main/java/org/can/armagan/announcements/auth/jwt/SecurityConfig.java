@@ -46,6 +46,7 @@ public class SecurityConfig {
                                 .antMatchers(HttpMethod.GET, "/getapidata").hasRole("EDITOR")
                                 .anyRequest().authenticated()
 
+
                 )
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling.accessDeniedHandler(accessDeniedHandler)

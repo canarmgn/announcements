@@ -23,7 +23,6 @@ public class UserService {
     }
 
 
-
     public void addRoleToUser(long userId, long roleId) {
         User_Roles userRoles = new User_Roles();
         userRoles.setUser_id(userId);
