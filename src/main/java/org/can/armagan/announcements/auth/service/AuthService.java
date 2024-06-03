@@ -21,7 +21,6 @@ public class AuthService {
     private final UserDetailsService userDetailsService;
     private final AuthenticationManager authenticationManager;
 
-
     public String getToken(AuthRequest authRequest) {
         try{
             authenticationManager.authenticate((new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())));
@@ -31,11 +30,5 @@ public class AuthService {
         final UserDetails userDetails =userDetailsService.loadUserByUsername(authRequest.getUsername());
         return jwtUtil.generateToken(userDetails);
     }
-
-
-
-
-
-
 
 }

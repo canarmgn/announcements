@@ -16,5 +16,5 @@ public AuthRequest(String username, String password, String roleName) {
         this.username = username;
         this.password = password;
         this.roleName = roleName;
-}
+  }
 }

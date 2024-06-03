@@ -25,12 +25,12 @@ public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
     private final CustomAccessDeniedHandler accessDeniedHandler;
-    private final CustomUserDetailsService userDetailsService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
@@ -45,15 +45,12 @@ public class SecurityConfig {
                                 .antMatchers("/login").permitAll()
                                 .antMatchers(HttpMethod.GET, "/getapidata").hasRole("EDITOR")
                                 .anyRequest().authenticated()
-
-
                 )
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling.accessDeniedHandler(accessDeniedHandler)
                 )
                 .sessionManagement(sessionManagement ->
-                        sessionManagement
-                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

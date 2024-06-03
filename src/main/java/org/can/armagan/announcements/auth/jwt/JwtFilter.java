@@ -1,6 +1,5 @@
 package org.can.armagan.announcements.auth.jwt;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.can.armagan.announcements.auth.service.CustomUserDetailsService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,22 +15,28 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsService userDetailsService;
+    private static final ThreadLocal<String> currentUser = new ThreadLocal<>();
+
+    public JwtFilter(JwtUtil jwtUtil, CustomUserDetailsService userDetailsService) {
+        this.jwtUtil = jwtUtil;
+        this.userDetailsService = userDetailsService;
+    }
+
+    public static String getCurrentUser() {
+        return currentUser.get();
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
         String username = null;
         String jwt = null;
-
-        log.info("Authorization Header: " + authHeader);
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
@@ -43,10 +48,6 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         }
 
-        if (username == null) {
-            log.info("Username is null.");
-        }
-
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             if (Boolean.TRUE.equals(jwtUtil.validateToken(jwt, userDetails))) {
@@ -56,11 +57,13 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
                 log.info("Authentication successful for user: " + username);
+                currentUser.set(username);
             } else {
                 log.info("Token validation failed for user: " + username);
             }
         }
 
         filterChain.doFilter(request, response);
+        currentUser.remove();
     }
 }
