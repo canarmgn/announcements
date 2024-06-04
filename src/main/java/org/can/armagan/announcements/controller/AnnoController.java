@@ -4,7 +4,7 @@ package org.can.armagan.announcements.controller;
 import lombok.RequiredArgsConstructor;
 import org.can.armagan.announcements.model.Announcement;
 import org.can.armagan.announcements.model.request.AnnouncementRequest;
-import org.can.armagan.announcements.model.request.SupportRequest;
+import org.can.armagan.announcements.model.response.AnnouncementResponse;
 import org.can.armagan.announcements.service.AnnoService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -22,16 +22,23 @@ public class AnnoController {
         return annoService.addContent(request.getContent(), request.getSubject());
     }
 
-    @PostMapping("/providesupport")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public String support(@RequestBody SupportRequest supportRequest) {
-        return annoService.addSupport(supportRequest.getId());
+    @PostMapping("/announcement/{id}/support")
+    public String addSupportToAnnouncement(@PathVariable String id) {
+        return annoService.addSupport(id);
     }
 
-    @GetMapping("/announcements/{annoId}")
+    @GetMapping("/announcements/{creator}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public List<Announcement> getAnno(@PathVariable("annoId") Long annoId) {
-        return annoService.getAnno(annoId);
+    public List<AnnouncementResponse> getAnnoCreator(@PathVariable String creator) {
+        return annoService.getAnnoCreator(creator);
     }
+
+    @GetMapping("/announcements/supporter/{name}")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public List<AnnouncementResponse> getSupportedAnno(@PathVariable String name) {
+        return annoService.getSupportedAnno(name);
+    }
+
+
 
 }

@@ -2,9 +2,9 @@ package org.can.armagan.announcements.model;
 
 import lombok.Getter;
 import lombok.Setter;
-
 import javax.persistence.*;
-
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -17,5 +17,12 @@ public class Announcement {
     private String content;
     private String subject;
     private String creator;
-    private String supporters;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "announcement_supporter",
+            joinColumns = @JoinColumn(name = "announcement_id"),
+            inverseJoinColumns = @JoinColumn(name = "supporter_id")
+    )
+    private Set<Supporter> supporters = new HashSet<>();
 }
